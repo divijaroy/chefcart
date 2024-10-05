@@ -12,7 +12,7 @@ import Login from './screens/login';
 import MyOrders from './screens/myorders';
 import Deforderspage from './screens/Deforderspage';
 import Profile from './screens/profile';
-
+import YouTubeSearch from './screens/youtube';
 function App() {
   return (
     <>
@@ -26,10 +26,11 @@ function App() {
         <Route exact path="/login"   element={<Login/>}/>
         <Route exact path="/defaultorder"   element={<Deforderspage/>}/>
         <Route exact path="/Profile"   element={<Profile/>}/>
-        
+        <Route exact path="/youtube"   element={<YouTubeSearch/>}/>
         </Routes>
       </Router>
       </CartProvider> 
+      
     </>
   );
 }

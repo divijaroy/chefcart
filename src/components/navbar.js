@@ -41,6 +41,9 @@ export default function Navbar() {
               <li className="nav-item fs-5">
                 <Link className="nav-link active" aria-current="page" to="/defaultorder">DefaultOrders</Link>
               </li> 
+              <li className="nav-item fs-5">
+                <Link className="nav-link active" aria-current="page" to="/youtube">Recipe</Link>
+              </li> 
               </>               
               ) : (" ")}
 
