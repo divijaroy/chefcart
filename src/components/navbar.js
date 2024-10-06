@@ -21,8 +21,8 @@ export default function Navbar() {
     <div>
       <nav className="navbar fixedtop navbar-expand-lg" >
         <div className="container-fluid">
-          <Link className="navbar-brand fs-4" to="/" style={{ fontFamily: "Caveat,cursive" }}>
-            chefcart
+          <Link className="navbar-brand fs-4" to="/" style={{ color: '#fff' }}>
+            ChefCart
           </Link>
           <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span className="navbar-toggler-icon"></span>
@@ -33,17 +33,26 @@ export default function Navbar() {
               {(localStorage.getItem("authToken")) ? (
                 <>
                 <li className="nav-item fs-5">
-                  <Link className="nav-link active" aria-current="page" to="/orders">OrderNew</Link>
-                </li>
-                <li className="nav-item fs-5">
-                <Link className="nav-link active" aria-current="page" to="/myorders">myOrders</Link>
-              </li>
-              <li className="nav-item fs-5">
-                <Link className="nav-link active" aria-current="page" to="/defaultorder">DefaultOrders</Link>
-              </li> 
-              <li className="nav-item fs-5">
-                <Link className="nav-link active" aria-current="page" to="/youtube">Recipe</Link>
-              </li> 
+  <Link className="nav-link active" aria-current="page" to="/orders" style={{ color: '#fff' }}>
+    OrderNew
+  </Link>
+</li>
+<li className="nav-item fs-5">
+  <Link className="nav-link active" aria-current="page" to="/myorders" style={{ color: '#fff' }}>
+    MyOrders
+  </Link>
+</li>
+<li className="nav-item fs-5">
+  <Link className="nav-link active" aria-current="page" to="/defaultorder" style={{ color: '#fff' }}>
+    DefaultOrders
+  </Link>
+</li>
+<li className="nav-item fs-5">
+  <Link className="nav-link active" aria-current="page" to="/youtube" style={{ color: '#fff' }}>
+    Recipe
+  </Link>
+</li>
+
               </>               
               ) : (" ")}
 

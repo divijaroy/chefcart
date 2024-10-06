@@ -1,7 +1,12 @@
 .navbar{
-    background-color:#30A2FF;
+    background-color:#ff7043;
+   
+   
 }
-
+ 
 .btn{
-    border-color: black;
+     background-color: #ff7043;
+     border: none;
+   
+     color: white; 
 }

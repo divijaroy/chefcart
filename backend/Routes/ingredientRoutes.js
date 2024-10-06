@@ -3,9 +3,8 @@ const router = express.Router();
 const twilio = require('twilio');
 
 
-const client = new twilio(process.env.accountSid, process.env.authToken);
+const client = new twilio(process.env.REACT_APP_accountSid, process.env.REACT_APP_authToken);
 
- 
 const instructionKeywords = [
     'boil', 'cook', 'fry', 'bake', 'stir', 'grill', 'saute', 'mix', 'blend', 'cover', 'heat', 'add'
 ];
@@ -35,18 +34,19 @@ const extractIngredients = (text) => {
 
     const lines = text.split('\n');
 
-    // Filter lines containing only ingredients and not URLs
+    // Filter lines containing only ingredients and not URLs, and check their length
     const matchingLines = lines.filter(line => {
         const hasIngredients = pattern.test(line);
         const hasInstructions = isInstructionLine(line);
         const hasURL = containsURL(line);
-
-        // Include line if it has ingredients, does NOT have instructions, and does NOT have URLs
-        return hasIngredients && !hasInstructions && !hasURL;
+        
+        // Include line if it has inoes NOT have instructiongredients, ds, does NOT have URLs, and is <= 60 characters
+        return hasIngredients && !hasInstructions && !hasURL && line.length <= 60;
     });
 
     return containsIngredientsKeyword(text) ? matchingLines : [];
 };
+
 // Endpoint to extract ingredients from a description
 router.post('/extract_ingredients', (req, res) => {
     try {
@@ -58,6 +58,7 @@ router.post('/extract_ingredients', (req, res) => {
         res.status(500).json({ error: error.message });
     }
 });
+
 
 // Endpoint to send WhatsApp message
 router.post('/send_whatsapp', async (req, res) => {
