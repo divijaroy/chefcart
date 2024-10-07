@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { FaWhatsapp, FaCartPlus } from 'react-icons/fa';
 import styled from 'styled-components';
 import backgroundImage from '../images/tomato-veggies-soup-with-empty-notepad.jpg'; // Adjust the path accordingly
+const parser = require('ingredientparserjs');
 
 const YouTubeSearch = () => {
   const [query, setQuery] = useState('');
@@ -78,8 +79,19 @@ const YouTubeSearch = () => {
     }
   };
 
-  const addToCart = (ingredients) => {
-    alert(`Added to cart: ${ingredients.join(', ')}`);
+  const addToCart = async (ingredients) => {
+    // Parse ingredients using ingredientparserjs
+    const parsedIngredients = ingredients.map(item => parser.parse(item));
+
+    // Log parsed ingredients to console
+    parsedIngredients.forEach(ingredient => {
+      console.log(`Ingredient: ${Array.isArray(ingredient.name) ? ingredient.name.join(', ') : ingredient.name}`);
+      console.log(`Quantity: ${ingredient.measurement ? ingredient.measurement.quantity : 'None'}`);
+      console.log(`Unit: ${ingredient.measurement ? ingredient.measurement.unit : 'None'}`);
+      console.log('-'.repeat(40));
+    });
+
+    alert(`Added to cart: ${parsedIngredients.map(ing => ing.name).join(', ')}`);
   };
 
   // New state to manage the expanded state of ingredients
@@ -96,7 +108,6 @@ const YouTubeSearch = () => {
     <Container>
       {!searched ? (
         <LandingPage>
-        
           <h1>Discover Delicious Recipes</h1>
           <form onSubmit={handleSearch}>
             <input
@@ -114,13 +125,13 @@ const YouTubeSearch = () => {
             <VideoCard key={video.id.videoId}>
               <h5>{video.snippet.title}</h5>
               <VideoAndIngredients>
-              <VideoAndButton>
-                <iframe
-                  title={video.snippet.title}
-                  src={`https://www.youtube.com/embed/${video.id.videoId}`}
-                  frameBorder="0"
-                  allowFullScreen
-                ></iframe>
+                <VideoAndButton>
+                  <iframe
+                    title={video.snippet.title}
+                    src={`https://www.youtube.com/embed/${video.id.videoId}`}
+                    frameBorder="0"
+                    allowFullScreen
+                  ></iframe>
                   <ButtonGroup>
                     <button onClick={() => addToCart(video.ingredients)}>
                       <FaCartPlus size={20} /> Add to Cart
@@ -129,7 +140,7 @@ const YouTubeSearch = () => {
                       <FaWhatsapp size={20} color="green" /> Send to WhatsApp
                     </button>
                   </ButtonGroup>
-                  </VideoAndButton>
+                </VideoAndButton>
                 <Ingredients>
                   <h4>Ingredients:</h4>
                   <ul>
@@ -138,26 +149,20 @@ const YouTubeSearch = () => {
                     ))}
                   </ul>
                   {video.ingredients.length > 5 && (
-                    <button 
-  onClick={() => handleReadMore(video.id.videoId)} 
-  style={{
-    backgroundColor: '#fff', // Orange color
-    color: '#ff7043',              // White text
-    border: 'none',             // No border
-        // Rounded corners
-    // Padding for the button
-    cursor: 'pointer',          // Pointer cursor on hover
-  }}
->
-  {expanded[video.id.videoId] ? 'show less' : '...read more'}
-</button>
-
+                    <button
+                      onClick={() => handleReadMore(video.id.videoId)}
+                      style={{
+                        backgroundColor: '#fff',
+                        color: '#ff7043',
+                        border: 'none',
+                        cursor: 'pointer',
+                      }}
+                    >
+                      {expanded[video.id.videoId] ? 'show less' : '...read more'}
+                    </button>
                   )}
-                 
                 </Ingredients>
-                </VideoAndIngredients>
-              
-             
+              </VideoAndIngredients>
             </VideoCard>
           ))}
         </VideoContainer>
@@ -165,7 +170,9 @@ const YouTubeSearch = () => {
     </Container>
   );
 };
-// Styled Components for UI
+
+ 
+
 const Container = styled.div`
   font-family: 'Arial', sans-serif;
   background-color: #fff;
