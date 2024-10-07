@@ -22,3 +22,13 @@ backend/.env
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+# Ignore all .env files in the root and subdirectories
+*.env
+*.env.*
+
+# Ensure specific .env files are ignored as well
+.env
+.env.local
+.env.development
+.env.test
+.env.production
