@@ -153,7 +153,7 @@ const YouTubeSearch = () => {
                       onClick={() => handleReadMore(video.id.videoId)}
                       style={{
                         backgroundColor: '#fff',
-                        color: '#ff7043',
+                        color: '#18283f',
                         border: 'none',
                         cursor: 'pointer',
                       }}
@@ -183,41 +183,45 @@ const LandingPage = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center;
+  align-items: flex-end; /* Align items towards the right */
   height: 100vh;
+  padding-right: 50px; /* Add some padding to move the content a bit away from the edge */
   background: url(${backgroundImage}) no-repeat center center/cover;
   
   h1 {
-    color: #ff7043;
+    color: #18283f;
     font-size: 3rem;
     margin-bottom: 20px;
+    text-align: right; /* Align the heading to the right */
   }
 
   form {
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: flex-end; /* Align form elements towards the right */
   }
 
   input {
     padding: 10px;
     width: 300px;
     border-radius: 5px;
-    border: 2px solid #ff7043;
+    border: 2px solid #18283f;
     margin-bottom: 10px;
+    margin-right: 45%;
   }
 
   button {
     padding: 10px 20px;
-    background-color: #ff7043;
+    background-color: #18283f;
     color: #fff;
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    margin-right:80%;
   }
 
   button:hover {
-    background-color: #ff5722;
+    background-color: #18283f;
   }
 `;
 
@@ -232,7 +236,7 @@ const VideoContainer = styled.div`
   margin: 2%; /* Centers the container */
   gap: 15px;
   h5 {
-    color: #ff5722;
+    color: #18283f;
     margin-bottom: 10px;
    
   }
@@ -253,7 +257,7 @@ const VideoCard = styled.div`
   }
 
   h4 {
-    color: #ff5722;
+    color: #18283f;
     margin-bottom: 10px;
    
   }
@@ -280,7 +284,7 @@ const Ingredients = styled.div`
   margin-left: 20px;
 
   h4 {
-    color: #ff5722;
+    color: #18283f;
   
   }
 
@@ -305,7 +309,7 @@ const ButtonGroup = styled.div`
     padding: 10px;
     border: none;
     border-radius: 10px;
-    background-color: #ff7043;
+    background-color: #18283f;
     color: #fff;
     width: 100%;
 
@@ -313,7 +317,7 @@ const ButtonGroup = styled.div`
   }
 
   button:hover {
-    background-color: #ff5722;
+    background-color: #18283f;
   }
 
   svg {
