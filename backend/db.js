@@ -12,18 +12,23 @@ const MongoDB = () => {
                     global.products = data;
                 }
             })
-            const brand = await mongoose.connection.db.collection("brands");
-            brand.find({}).toArray(async function (err, brandData) {
-                if (err) console.log(err);
-                else {
-                    global.brand=brandData;
-                }})
+            // const brand = await mongoose.connection.db.collection("brands");
+            // brand.find({}).toArray(async function (err, brandData) {
+            //     if (err) console.log(err);
+            //     else {
+            //         global.brand=brandData;
+            //     }})
+            
             const category = await mongoose.connection.db.collection("category");
             category.find({}).toArray(async function (err, catData) {
-                if (err) console.log(err);
-                else {
-                    global.category=catData;
-                }})
+                if (err) {
+                    console.log(err);
+                } else {
+                    //console.log(catData); // Log the fetched category data
+                    global.category = catData;
+                }
+            });
+
         }
     });
 

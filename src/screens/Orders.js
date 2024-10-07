@@ -1,99 +1,103 @@
-import React from 'react'
-import Navbar from '../components/navbar'
-import Cardes from '../components/Cardes'
-import { useState, useEffect } from 'react'
-export default function Orders() {
+import React, { useState, useEffect } from 'react';
+import Navbar from '../components/navbar';
+import Cardes from '../components/Cardes';
 
+export default function Orders() {
     const [categories, setCategories] = useState([]);
-    const [brands, setBrands] = useState([]);
-    const [Products, setProducts] = useState([]);
     const [filteredData, setFilteredData] = useState([]);
     const [selectedCategory, setSelectedCategory] = useState('');
-    const [selectedBrand, setSelectedBrand] = useState('');
+    const [currentPage, setCurrentPage] = useState(1);
+    const [hasMore, setHasMore] = useState(true);
+    const productsPerPage = 20; // Number of products per page
 
-    const loaddata = async () => {
+    const loaddata = async (reset = false) => {
         let response = await fetch('http://localhost:5000/api/DisplayData', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
-            }
-
+            },
+            body: JSON.stringify({
+                category: selectedCategory,
+                page: currentPage,
+                limit: productsPerPage
+            })
         });
-        response = await response.json();
-        setProducts(response[0]);
-        setBrands(response[1]);
-        setCategories(response[2])
+
+        const data = await response.json();
+        setCategories(data.categories);
+
+        if (reset) {
+            setFilteredData(data.products); // Reset the product list
+            setCurrentPage(1); // Reset the current page
+        } else {
+            setFilteredData((prevData) => [...prevData, ...data.products]); // Append new products
+        }
+
+        // Check if there are more products to load
+        if (data.products.length < productsPerPage) {
+            setHasMore(false); // No more products available
+        } else {
+            setHasMore(true);
+        }
     };
 
+    // Fetch data when the selected category or current page changes
     useEffect(() => {
-        loaddata()
-    }, [])
+        loaddata(true); // Reset data when category changes
+    }, [selectedCategory]);
 
-
+    // Fetch more products when currentPage changes
     useEffect(() => {
-        const filteredProducts = Products.filter((product) => {
-            if (selectedCategory && selectedBrand) {
-                return (
-                    product.category === selectedCategory &&
-                    product.brand === selectedBrand
-                );
-            } else if (selectedCategory) {
-                return product.category === selectedCategory;
-            } else if (selectedBrand) {
-                return product.brand === selectedBrand;
-            } else {
-                return true;
+        if (currentPage > 1) {
+            loaddata(); // Load more products
+        }
+    }, [currentPage]);
+
+    // Infinite scrolling logic
+    useEffect(() => {
+        const handleScroll = () => {
+            // Load more products when scrolling near the bottom
+            if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 100 && hasMore) {
+                setCurrentPage((prevPage) => prevPage + 1); // Increment current page
             }
-        });
+        };
 
-        setFilteredData(filteredProducts);
-    }, [selectedCategory, selectedBrand, Products]);
-
-
-
-
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll); // Cleanup
+    }, [hasMore]);
 
     return (
         <>
-            <div><Navbar /></div>
+            <Navbar />
             <div style={{ fontSize: '20px', display: "flex", justifyContent: 'center', marginTop: '85px', flexWrap: "wrap" }}>
                 <label htmlFor="category" style={{ marginRight: '10px', marginTop: '4px' }}>Category:</label>
                 <select
                     id="category"
                     value={selectedCategory}
-                    onChange={(e) => setSelectedCategory(e.target.value)} style={{ padding: '5px 10px', borderRadius: '5px', marginRight: '10px', boxShadow: '0 10px 15px rgba(0, 0, 0, 0.2)' }}>
+                    onChange={(e) => {
+                        setSelectedCategory(e.target.value);
+                        setCurrentPage(1); // Reset to first page when changing category
+                        setFilteredData([]); // Clear existing products
+                        setHasMore(true); // Reset more products
+                    }}
+                    style={{ padding: '5px 10px', borderRadius: '5px', marginRight: '10px', boxShadow: '0 10px 15px rgba(0, 0, 0, 0.2)' }}>
                     <option value="">All</option>
                     {categories.map((category) => (
                         <option key={category._id} value={category.category}>{category.category}</option>
                     ))}
                 </select>
-
-                <label htmlFor="brand" style={{ marginRight: '10px', marginTop: '4px' }}>Brand:</label>
-                <select
-                    id="brand"
-                    value={selectedBrand}
-                    onChange={(e) =>
-                        setSelectedBrand(e.target.value)
-                    } style={{ padding: '5px 10px', borderRadius: '5px', marginRight: '10px', boxShadow: '0 10px 15px rgba(0, 0, 0, 0.2)' }} >
-                    <option value="">All</option>
-                    {brands.map((brand) => (
-                        <option key={brand._id} value={brand.brand}>{brand.brand}</option>
-                    ))}
-
-                </select>
             </div>
-            <div style={{ display: "flex", justifyContent: 'center', marginTop: '55px', flexWrap: "wrap" }} >
+            <div style={{ display: "flex", justifyContent: 'center', marginTop: '55px', flexWrap: "wrap" }}>
                 {filteredData.length > 0 ? (
                     filteredData.map((product) => (
-                        <div key={product._id}>
-                            <Cardes foodItem={product}></Cardes>
+                        <div key={product._id} style={{ margin: '10px' }}>
+                            <Cardes foodItem={product} />
                         </div>
                     ))
                 ) : (
                     <p>No results found.</p>
                 )}
             </div>
-
         </>
-    )
+    );
 }
