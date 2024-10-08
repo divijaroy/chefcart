@@ -2,13 +2,13 @@ import React from "react";
 
 export default function CarouselOne() {
   return (
-    <div className="container" style={{ width: "85%", margin: "auto" }}>
+    <div className="container" style={{ width: "100%", marginTop: "4%",boxShadow: "none" }}>
       <div
         id="carouselExampleDark"
-        className="carousel carousel-dark slide"
+        className="carousel carousel-dark slide"  
         data-bs-ride="carousel"
       >
-        <div className="carousel-indicators">
+        <div className="carousel-indicators" >
           <button
             type="button"
             data-bs-target="#carouselExampleDark"
@@ -16,6 +16,7 @@ export default function CarouselOne() {
             className="active"
             aria-current="true"
             aria-label="Slide 1"
+            
           ></button>
           <button
             type="button"
@@ -90,8 +91,8 @@ export default function CarouselOne() {
             aria-label="Slide 13"
           ></button>
         </div>
-        <div className="carousel-inner">
-          <div className="carousel-item active" data-bs-interval="1000">
+        <div className="carousel-inner" >
+          <div className="carousel-item active"  data-bs-interval="1000">
             <img
               src="https://d1z88p83zuviay.cloudfront.net/BannerImages/0f2301bb-4607-47f9-859c-1c2c21642159_1320x376.jpg"
               className="d-block w-100"

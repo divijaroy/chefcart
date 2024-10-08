@@ -44,6 +44,7 @@ export default function Orders() {
     // Fetch data when the selected category or current page changes
     useEffect(() => {
         loaddata(true); // Reset data when category changes
+           // eslint-disable-next-line
     }, [selectedCategory]);
 
     // Fetch more products when currentPage changes
@@ -51,6 +52,7 @@ export default function Orders() {
         if (currentPage > 1) {
             loaddata(); // Load more products
         }
+        // eslint-disable-next-line
     }, [currentPage]);
 
     // Infinite scrolling logic
