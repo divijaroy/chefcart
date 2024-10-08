@@ -1,7 +1,16 @@
-.navbar{
-    background-color:#ff7043;
-   
-   
+
+.navbar {
+  position: fixed; /* Keeps the navbar fixed at the top */
+  top: 0; /* Aligns it to the very top of the viewport */
+  width: 100%; /* Ensures the navbar spans the full width of the page */
+  z-index: 1000; /* Keeps the navbar above other content */
+  background-color: #ff7043; /* Optional background color (adjust as needed) */
+  padding: 10px 0; /* Adjust padding as needed */
+  margin-bottom: 20px;
+}
+
+.navbar + .content {
+  padding-top: 80px; /* Adjust this value to prevent content from overlapping with the navbar */
 }
  
 .btn{

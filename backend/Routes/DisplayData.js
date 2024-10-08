@@ -1,29 +1,38 @@
-const express = require('express');
-const router = express.Router();
+const express = require('express')
+const router = express.Router()
 
-router.post('/DisplayData', async (req, res) => {
-    const { category, page = 1, limit = 20 } = req.body; // Default limit set to 20
-
+router.post('/DisplayData',(req,res)=>{
     try {
-        let filter = {};
-        if (category) {
-            filter.Category = category; // Filter products by category
+        res.send([global.products,global.brand,global.category])
+    } catch (error) {
+        console.error(error.message);
+        res.send("server error");
+    }
+})
+
+router.get('/products', (req, res) => {
+    const categoryId = req.query.categoryId; // Get the category ID from the query parameters
+    console.log(categoryId)
+    try {
+        // Find the category name based on the category ID
+        const ObjectId = require('mongodb').ObjectId;
+        const category = global.category.find(cat => cat._id.equals(ObjectId(categoryId)));
+
+        console.log(category.category)
+        if (!category) {
+            return res.status(404).json({ message: "Category not found" });
         }
 
-        const productsCollection = global.products;
+        // Filter products based on the category name
+        const filteredProducts = global.products.filter(
+            (product) => product.Category === category.category // Compare with the category name
+        );
 
-        // Count total products for pagination
-        const totalProducts = await productsCollection.countDocuments(filter);
-        const products = await productsCollection
-            .find(filter)
-            .skip((page - 1) * limit)
-            .limit(limit)
-            .toArray();
-
-        const categoriesCollection =global.category;
-        const categories = await categoriesCollection.find({}).toArray();
-
-        res.send({ products, categories, totalProducts }); // Return products, categories, and total count
+        if (filteredProducts.length > 0) {
+            res.json(filteredProducts);
+        } else {
+            res.status(404).json({ message: "No products found for this category" });
+        }
     } catch (error) {
         console.error(error.message);
         res.status(500).send("Server error");
@@ -31,4 +40,14 @@ router.post('/DisplayData', async (req, res) => {
 });
 
 
-module.exports = router;
+router.get('/categories', (req, res) => {
+    try {
+        
+        res.send( global.category)
+    } catch (error) {
+        console.error(error.message);
+        res.send("server error");
+    }
+})
+
+module.exports=router;
