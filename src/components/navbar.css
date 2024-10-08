@@ -4,7 +4,7 @@
   top: 0; /* Aligns it to the very top of the viewport */
   width: 100%; /* Ensures the navbar spans the full width of the page */
   z-index: 1000; /* Keeps the navbar above other content */
-  background-color: #ff7043; /* Optional background color (adjust as needed) */
+  background-color: #18283f; /* Optional background color (adjust as needed) */
   padding: 10px 0; /* Adjust padding as needed */
   margin-bottom: 20px;
 }
@@ -14,7 +14,7 @@
 }
  
 .btn{
-     background-color: #ff7043;
+     background-color: #18283f;
      border: none;
    
      color: white; 
