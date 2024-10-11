@@ -12,13 +12,13 @@ router.post('/DisplayData',(req,res)=>{
 
 router.get('/products', (req, res) => {
     const categoryId = req.query.categoryId; // Get the category ID from the query parameters
-    console.log(categoryId)
+    // console.log(categoryId)
     try {
         // Find the category name based on the category ID
         const ObjectId = require('mongodb').ObjectId;
         const category = global.category.find(cat => cat._id.equals(ObjectId(categoryId)));
 
-        console.log(category.category)
+        // console.log(category.category)
         if (!category) {
             return res.status(404).json({ message: "Category not found" });
         }
