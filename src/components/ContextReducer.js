@@ -25,7 +25,28 @@ const reducer = (state, action) => {
         }
         return food;
       });
-
+    case 'SWAP':
+      return state.map((food) => {
+        if (food.id === action.oldItem.id) {
+          return {
+            ...action.newItem, // Replace old item with the new item
+            selectedQuantity: action.newItem.selectedQuantity || 1, // Carry over any quantity if provided
+            totalPrice: action.newItem.totalPrice || action.newItem.DiscountPrice * 1, // Ensure a valid total price
+          };
+        }
+        return food;
+      });
+    case 'UPDATE_QUANTITY':  // Add this case for quantity updates
+      return state.map((food, index) => {
+        if (index === action.index) {
+          return {
+            ...food,
+            selectedQuantity: action.updatedFood.selectedQuantity,
+            totalPrice: action.updatedFood.totalPrice,
+          };
+        }
+        return food;
+      });
     default:
       console.log("Error in Reducer");
   }

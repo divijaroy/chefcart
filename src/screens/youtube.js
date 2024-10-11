@@ -1,19 +1,43 @@
-import React, { useState } from 'react';
+// src/components/YouTubeSearch.js
+import React, { useEffect, useState } from 'react';
 import { FaWhatsapp, FaCartPlus } from 'react-icons/fa';
-import styled from 'styled-components';
-import backgroundImage from '../images/tomato-veggies-soup-with-empty-notepad.jpg'; // Adjust the path accordingly
+import Navbar from '../components/navbar';
+import './YouTubeSearch.css';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useDispatchCart, useCart } from '../components/ContextReducer';
+import ToastNotification from '../components/ToastNotification';
 const parser = require('ingredientparserjs');
 
 const YouTubeSearch = () => {
-  const [query, setQuery] = useState('');
+  let dispatch = useDispatchCart();
+  let data = useCart();
+  const { query } = useParams(); // Get the query from the URL parameters
   const [videos, setVideos] = useState([]);
-  const [searched, setSearched] = useState(false);
+  const [expanded, setExpanded] = useState({});
+  const [toastInfo, setToastInfo] = useState({ show: false, message: '', type: 'success' });
+  const [missingIngredients, setMissingIngredients] = useState([]);
   const apiKey = process.env.REACT_APP_API_KEY;
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (query) {
+      searchVideos(); // Call searchVideos when the component mounts
+    }
+  }, [query]);
 
   const searchVideos = async () => {
     try {
       const response = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&q=${query} recipe&key=${apiKey}&maxResults=10`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
       const data = await response.json();
+
+      // Check if 'items' exists and is an array
+      if (!data.items || !Array.isArray(data.items)) {
+        throw new Error('Invalid data structure: "items" not found or not an array');
+      }
 
       const videoDetails = await Promise.all(data.items.map(async (video) => {
         const videoId = video.id.videoId;
@@ -35,7 +59,6 @@ const YouTubeSearch = () => {
 
       const validVideos = videosWithIngredients.filter(video => video.ingredients.length > 2);
       setVideos(validVideos);
-      setSearched(true);
     } catch (error) {
       console.error('Error fetching videos', error);
     }
@@ -57,11 +80,6 @@ const YouTubeSearch = () => {
     }
   };
 
-  const handleSearch = (e) => {
-    e.preventDefault();
-    searchVideos();
-  };
-
   const sendWhatsAppMessage = async (ingredients) => {
     try {
       const response = await fetch('http://localhost:5000/api/send_whatsapp', {
@@ -79,23 +97,82 @@ const YouTubeSearch = () => {
     }
   };
 
-  const addToCart = async (ingredients) => {
-    // Parse ingredients using ingredientparserjs
-    const parsedIngredients = ingredients.map(item => parser.parse(item));
-
-    // Log parsed ingredients to console
-    parsedIngredients.forEach(ingredient => {
-      console.log(`Ingredient: ${Array.isArray(ingredient.name) ? ingredient.name.join(', ') : ingredient.name}`);
-      console.log(`Quantity: ${ingredient.measurement ? ingredient.measurement.quantity : 'None'}`);
-      console.log(`Unit: ${ingredient.measurement ? ingredient.measurement.unit : 'None'}`);
-      console.log('-'.repeat(40));
-    });
-
-    alert(`Added to cart: ${parsedIngredients.map(ing => ing.name).join(', ')}`);
+  const showToast = (message, type) => {
+    setToastInfo({ show: true, message, type });
+    setTimeout(() => setToastInfo({ show: false, message: '', type: 'success' }), 3000); // Automatically hide after 3 seconds
   };
 
-  // New state to manage the expanded state of ingredients
-  const [expanded, setExpanded] = useState({});
+
+  const addToCart = async (ingredients) => {
+    const parsedIngredients = ingredients.map(item => parser.parse(item));
+    const notFoundIngredients = []; // Array to hold ingredients for which products were not found
+
+    // Create an array to hold promises for fetching products
+    const productFetchPromises = parsedIngredients.map(async (linkedIngredient) => {
+      const ingredientName = linkedIngredient.name;
+
+      try {
+        const response = await fetch(`http://localhost:5000/api/search4?q=${ingredientName}`);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const productData = await response.json();
+
+        // Return the first product if available
+        return productData.length > 0 ? productData[0] : null;
+      } catch (error) {
+        // Add ingredient to the not found list
+        notFoundIngredients.push(ingredientName); // Collect the missing ingredient
+        return null; // Return null if there’s an error
+      }
+    });
+
+    // Wait for all product fetch promises to resolve
+    const products = await Promise.all(productFetchPromises);
+
+    // Filter out null values (for ingredients without found products)
+    const validProducts = products.filter(product => product !== null);
+
+    // Add each valid product to the cart
+    validProducts.forEach(product => {
+      const totalPrice = product.DiscountPrice; // Adjust as per your cart logic
+      const item = {
+        id: product._id,
+        name: product.ProductName,
+        image: product.Image_Url,
+        description: product.SubCategory,
+        quantity: product.Quantity, // Adjust this if necessary
+        price: product.DiscountPrice,
+        brand: product.Brand,
+        selectedQuantity: 1,
+        totalPrice: totalPrice,
+      };
+
+      let food = [];
+      for (const cartItem of data) {
+        if (cartItem.id === product._id) {
+          food = cartItem;
+          break;
+        }
+      }
+
+      if (food.length !== 0) {
+        dispatch({ type: 'UPDATE', id: product._id, totalPrice: totalPrice, selectedQuantity: 1 });
+        return;
+      }
+      dispatch({ type: 'ADD', item });
+      showToast(`${product.ProductName} added to cart!`, 'success');
+    });
+
+    // Show a toast notification if there are any missing ingredients
+    if (notFoundIngredients.length > 0) {
+      setMissingIngredients(notFoundIngredients); // Update the state with missing ingredients
+      showToast(`No products found for: ${notFoundIngredients.join(', ')}`, 'danger');
+    } else {
+      setMissingIngredients([]); // Clear missing ingredients if all products were found
+    }
+  };
+
 
   const handleReadMore = (videoId) => {
     setExpanded(prev => ({
@@ -104,225 +181,137 @@ const YouTubeSearch = () => {
     }));
   };
 
+  const shopIngredients = async (videoIngredients) => {
+    
+
+    const parsedIngredients = videoIngredients.map(item => parser.parse(item));
+
+    const linkedIngredients = videoIngredients.map((ingredient, index) => ({
+      original: ingredient,
+      parsed: parsedIngredients[index]
+    }));
+
+    console.log('Linked Ingredients:', linkedIngredients);
+
+    navigate(`/youtube/${query}/shopingredients`, { state: { videoIngredients, parsedIngredients: linkedIngredients } });
+  };
+
   return (
-    <Container>
-      {!searched ? (
-        <LandingPage>
-          <h1>Discover Delicious Recipes</h1>
-          <form onSubmit={handleSearch}>
-            <input
-              type="text"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search for a recipe"
-            />
-            <button type="submit">Search</button>
-          </form>
-        </LandingPage>
-      ) : (
-        <VideoContainer>
+    <div>
+      <Navbar />
+      <ToastNotification show={toastInfo.show} message={toastInfo.message} type={toastInfo.type} onClose={() => setToastInfo({ ...toastInfo, show: false })} />
+
+      <div className="container" style={{marginTop:"70px"}}>
+
+        <div className='video-container'>
+
           {videos.map((video) => (
-            <VideoCard key={video.id.videoId}>
+
+            <div className='video-card' key={video.id.videoId}>
+
               <h5>{video.snippet.title}</h5>
-              <VideoAndIngredients>
-                <VideoAndButton>
+
+              <div className='video-and-ingredients'>
+
+                <div className='video-and-button'>
+
                   <iframe
+
                     title={video.snippet.title}
+
                     src={`https://www.youtube.com/embed/${video.id.videoId}`}
+
                     frameBorder="0"
+
                     allowFullScreen
+
                   ></iframe>
-                  <ButtonGroup>
+
+                  <div className='button-group'>
+
                     <button onClick={() => addToCart(video.ingredients)}>
+
                       <FaCartPlus size={20} /> Add to Cart
+
                     </button>
+
                     <button onClick={() => sendWhatsAppMessage(video.ingredients)}>
+
                       <FaWhatsapp size={20} color="green" /> Send to WhatsApp
+
                     </button>
-                  </ButtonGroup>
-                </VideoAndButton>
-                <Ingredients>
+
+                    <button onClick={() => shopIngredients(video.ingredients)}>
+
+                      🛒 Shop Ingredients
+
+                    </button>
+
+                  </div>
+
+                </div>
+
+                <div className='ingredients'>
+
                   <h4>Ingredients:</h4>
+
                   <ul>
+
                     {video.ingredients.slice(0, expanded[video.id.videoId] ? video.ingredients.length : 5).map((ingredient, index) => (
+
                       <li key={index}>{ingredient}</li>
+
                     ))}
+
                   </ul>
+
                   {video.ingredients.length > 5 && (
+
                     <button
+
                       onClick={() => handleReadMore(video.id.videoId)}
+
                       style={{
+
                         backgroundColor: '#fff',
+
                         color: '#18283f',
+
                         border: 'none',
+
                         cursor: 'pointer',
+
                       }}
+
                     >
+
                       {expanded[video.id.videoId] ? 'show less' : '...read more'}
+
                     </button>
+
                   )}
-                </Ingredients>
-              </VideoAndIngredients>
-            </VideoCard>
+
+                </div>
+
+              </div>
+
+            </div>
+
           ))}
-        </VideoContainer>
-      )}
-    </Container>
-  );
+
+        </div>
+
+        {missingIngredients.length > 0 && (
+          <div className="alert alert-warning mt-3">
+            <strong>Missing Products:</strong> No products found for: {missingIngredients.join(', ')}
+          </div>
+        )}
+
+      </div>
+      </div>
+
+      );
+
 };
-
- 
-
-const Container = styled.div`
-  font-family: 'Arial', sans-serif;
-  background-color: #fff;
-`;
-
-
-const LandingPage = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: flex-end; /* Align items towards the right */
-  height: 100vh;
-  padding-right: 50px; /* Add some padding to move the content a bit away from the edge */
-  background: url(${backgroundImage}) no-repeat center center/cover;
-  
-  h1 {
-    color: #18283f;
-    font-size: 3rem;
-    margin-bottom: 20px;
-    text-align: right; /* Align the heading to the right */
-  }
-
-  form {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end; /* Align form elements towards the right */
-  }
-
-  input {
-    padding: 10px;
-    width: 300px;
-    border-radius: 5px;
-    border: 2px solid #18283f;
-    margin-bottom: 10px;
-    margin-right: 45%;
-  }
-
-  button {
-    padding: 10px 20px;
-    background-color: #18283f;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-right:80%;
-  }
-
-  button:hover {
-    background-color: #18283f;
-  }
-`;
-
-
-const VideoContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  align-items: flex-start;
-  max-width:100%; /* Ensures the container has enough width */
-  margin: 2%; /* Centers the container */
-  gap: 15px;
-  h5 {
-    color: #18283f;
-    margin-bottom: 10px;
-   
-  }
-`;
-
-const VideoCard = styled.div`
-  background: #ffff;
- 
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
-  flex: 1 1 45%; /* Ensures each card takes up roughly half of the container */
-  box-sizing: border-box;
-
-  iframe {
-    width: 100%;
-    height: 195px;
-  }
-
-  h4 {
-    color: #18283f;
-    margin-bottom: 10px;
-   
-  }
-`;
-
-
-const VideoAndButton = styled.div`
-  display: flex;
-  flex-direction: column;
-`;
-
-const VideoAndIngredients = styled.div`
-  display: flex;
-  justify-content: space-between;
-`;
-
-const Ingredients = styled.div`
-  background: #fff;
-  padding: 20px;
- 
-  border-radius: 10px;
- 
-  flex: 1;
-  margin-left: 20px;
-
-  h4 {
-    color: #18283f;
-  
-  }
-
-  ul {
-    list-style-type: none;
-    padding: 0;
-  }
-
-  li {
-    margin-bottom: 5px;
-    padding: 5px;
-  }
-`;
-
-const ButtonGroup = styled.div`
-  margin-top: 15px;
-  display: flex;
-  flex-direction: column;
-
-  button {
-    margin: 5px;
-    padding: 10px;
-    border: none;
-    border-radius: 10px;
-    background-color: #18283f;
-    color: #fff;
-    width: 100%;
-
-    cursor: pointer;
-  }
-
-  button:hover {
-    background-color: #18283f;
-  }
-
-  svg {
-    margin-right: 5px;
-  }
-`;
 
 export default YouTubeSearch;

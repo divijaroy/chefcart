@@ -1,0 +1,52 @@
+.container {
+  font-family: 'Arial', sans-serif;
+  background-color: #fff;
+}
+
+/* Landing page styles */
+.landing-page {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-end; /* Align items towards the right */
+  height: 100vh;
+  padding-right: 50px; /* Padding to move content a bit away from the edge */
+  background: url('../images/tomato-veggies-soup-with-empty-notepad.jpg') no-repeat center center/cover;
+  margin-top: 62.76px;
+}
+
+.landing-page h1 {
+  color: #18283f;
+  font-size: 3rem;
+  margin-bottom: 20px;
+  text-align: right; /* Align the heading to the right */
+}
+
+.landing-page form {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end; /* Align form elements to the right */
+}
+
+.landing-page input {
+  padding: 10px;
+  width: 300px;
+  border-radius: 5px;
+  border: 2px solid #18283f;
+  margin-bottom: 10px;
+  margin-right: 45%;
+}
+
+.landing-page button {
+  padding: 10px 20px;
+  background-color: #18283f;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-right: 80%;
+}
+
+.landing-page button:hover {
+  background-color: #0f1f3f; /* Slightly darker on hover for better visibility */
+}
