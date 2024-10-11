@@ -12,8 +12,11 @@ import Login from './screens/login';
 import MyOrders from './screens/myorders';
 import Deforderspage from './screens/Deforderspage';
 import Profile from './screens/profile';
+import YouTubeLanding from './screens/YoutubeLanding';
 import YouTubeSearch from './screens/youtube';
 import Products from './components/Products';
+import SearchResults from './components/SearchResults';
+import ShopIngredients from './screens/ShopIngredients';
 function App() {
   return (
     <>
@@ -27,9 +30,12 @@ function App() {
         <Route exact path="/login"   element={<Login/>}/>
         <Route exact path="/defaultorder"   element={<Deforderspage/>}/>
         <Route exact path="/Profile"   element={<Profile/>}/>
-        <Route exact path="/youtube"   element={<YouTubeSearch/>}/>
-        
+        <Route path="/youtube" element={<YouTubeLanding />} />
+        <Route path="/youtube/:query" element={<YouTubeSearch />} />
+        <Route path="/youtube/:query/shopingredients" element={<ShopIngredients />} />
+        <Route path="/search" element={<SearchResults />} />
         <Route path="/products/:categoryId" element={<Products />} />
+        <Route path="/shop-ingredients" element={<ShopIngredients />} />
         </Routes>
       </Router>
       </CartProvider> 

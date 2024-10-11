@@ -5,6 +5,7 @@ import Modal from "../Modal";
 import Cart from "../screens/cart";
 import { useCart } from "./ContextReducer";
 import { FaSearch } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Caveat&display=swap');
 </style>
@@ -16,6 +17,16 @@ export default function Navbar() {
   };
   const loadCart = () => {
     setCartView(true);
+  };
+  const [searchTerm, setSearchTerm] = useState("");
+  const navigate = useNavigate();  // Hook to programmatically navigate
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (searchTerm) {
+      // Navigate to the SearchResults page with the search term in the URL query parameters
+      navigate(`/search?q=${searchTerm}`);
+    }
   };
   const items = useCart();
 
@@ -52,12 +63,14 @@ export default function Navbar() {
             </ul>
 
             {/* Search Bar in the center of navbar */}
-            <form className="d-flex mx-auto" style={{ width: "40%" }}>
+            <form className="d-flex mx-auto" style={{ width: "40%" }} onSubmit={handleSearch}>
               <input
                 className="form-control me-2"
                 type="search"
                 placeholder="Search here...."
                 aria-label="Search"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
                 style={{
                   borderRadius: "20px",
                   padding: "0.5rem 1rem",
@@ -74,14 +87,13 @@ export default function Navbar() {
                   padding: "0.5rem 1rem",
                   marginLeft: "-45px",
                   zIndex: 1,
-                  backgroundColor: "#fff", // Background color for the search button
+                  backgroundColor: "#fff",
                   color: "#000",
                 }}
               >
                 <FaSearch />
               </button>
             </form>
-
             {(!localStorage.getItem("authToken"))
               ? (
                 <div>
