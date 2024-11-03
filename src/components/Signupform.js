@@ -73,7 +73,7 @@ export default function Signupform() {
               <textarea className="form-control requi" name="address" value={Credentials.address} onChange={onChange} placeholder="Enter full address (e.g., Apartment XYZ, Block A, Floor 5, Room 501)"></textarea>
             </div>
             <div className="mb-3">
-              <label htmlFor="contactNumber" className="form-label">Contact Number</label>
+              <label htmlFor="contactNumber" className="form-label"> 10 digit Contact Number</label>
               <input type="tel" className="form-control requi" name="contactNumber" value={Credentials.contactNumber} onChange={onChange} />
             </div>
             <div className="mb-3">

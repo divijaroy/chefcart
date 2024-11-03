@@ -1,10 +1,7 @@
-
-
-
 const express = require('express');
 const router = express.Router();
 const twilio = require('twilio');
-
+const user = require('../models/User');
 
 const client = new twilio(process.env.REACT_APP_accountSid, process.env.REACT_APP_authToken);
 
@@ -67,18 +64,28 @@ router.post('/extract_ingredients', (req, res) => {
 router.post('/send_whatsapp', async (req, res) => {
     try {
         const ingredients = req.body.ingredients;
+        const userProfile = await user.findOne({ email: req.body.email });
+        console.log(userProfile)
         if (!ingredients || ingredients.length === 0) {
             return res.status(400).json({ error: "Ingredients are required" });
         }
-
+        if (!userProfile) {
+            return res.status(404).json({ message: 'User not found.' });
+        }
         const messageBody = "Here are your ingredients:\n" + ingredients.join('\n');
 
+        let phoneNumber = userProfile.contactNumber;
+        console.log(phoneNumber)
+        if (phoneNumber.length === 10) {
+            phoneNumber = `+91${phoneNumber}`;
+        }
         // Send WhatsApp message to the fixed phone number
         const message = await client.messages.create({
             body: messageBody,
             from: 'whatsapp:+14155238886',  // Twilio's sandbox number
-            to: 'whatsapp:+917013533440'
+            to: `whatsapp:${phoneNumber}`
         });
+        console.log(`whatsapp:${phoneNumber}`)
 
         console.log("WhatsApp message sent successfully:", message.sid);
         return res.json({ status: "Message sent successfully", sid: message.sid });

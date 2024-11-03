@@ -1,4 +1,3 @@
-// src/components/YouTubeSearch.js
 import React, { useEffect, useState } from 'react';
 import { FaWhatsapp, FaCartPlus } from 'react-icons/fa';
 import Navbar from '../components/navbar';
@@ -11,17 +10,19 @@ const parser = require('ingredientparserjs');
 const YouTubeSearch = () => {
   let dispatch = useDispatchCart();
   let data = useCart();
-  const { query } = useParams(); // Get the query from the URL parameters
+  const { query } = useParams();
   const [videos, setVideos] = useState([]);
   const [expanded, setExpanded] = useState({});
   const [toastInfo, setToastInfo] = useState({ show: false, message: '', type: 'success' });
   const [missingIngredients, setMissingIngredients] = useState([]);
+  const [loading, setLoading] = useState(false); // Loading state for Add to Cart button
+  const [whatsAppLoading, setWhatsAppLoading] = useState(false); // Loading state for WhatsApp button
   const apiKey = process.env.REACT_APP_API_KEY;
   const navigate = useNavigate();
 
   useEffect(() => {
     if (query) {
-      searchVideos(); // Call searchVideos when the component mounts
+      searchVideos();
     }
   }, [query]);
 
@@ -34,7 +35,6 @@ const YouTubeSearch = () => {
 
       const data = await response.json();
 
-      // Check if 'items' exists and is an array
       if (!data.items || !Array.isArray(data.items)) {
         throw new Error('Invalid data structure: "items" not found or not an array');
       }
@@ -81,33 +81,38 @@ const YouTubeSearch = () => {
   };
 
   const sendWhatsAppMessage = async (ingredients) => {
+    setWhatsAppLoading(true); // Start loading for WhatsApp button
+
     try {
       const response = await fetch('http://localhost:5000/api/send_whatsapp', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ ingredients }),
+        body: JSON.stringify({ ingredients, email: localStorage.getItem('userEmail') }),
+       
       });
       const data = await response.json();
       alert(data.status || 'Message sent!');
     } catch (error) {
       console.error('Error sending WhatsApp message', error);
       alert('Failed to send message');
+    } finally {
+      setWhatsAppLoading(false); // End loading for WhatsApp button
     }
   };
 
   const showToast = (message, type) => {
     setToastInfo({ show: true, message, type });
-    setTimeout(() => setToastInfo({ show: false, message: '', type: 'success' }), 3000); // Automatically hide after 3 seconds
+    setTimeout(() => setToastInfo({ show: false, message: '', type: 'success' }), 3000);
   };
 
-
   const addToCart = async (ingredients) => {
-    const parsedIngredients = ingredients.map(item => parser.parse(item));
-    const notFoundIngredients = []; // Array to hold ingredients for which products were not found
+    setLoading(true); // Start loading
 
-    // Create an array to hold promises for fetching products
+    const parsedIngredients = ingredients.map(item => parser.parse(item));
+    const notFoundIngredients = [];
+
     const productFetchPromises = parsedIngredients.map(async (linkedIngredient) => {
       const ingredientName = linkedIngredient.name;
 
@@ -117,31 +122,24 @@ const YouTubeSearch = () => {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         const productData = await response.json();
-
-        // Return the first product if available
         return productData.length > 0 ? productData[0] : null;
       } catch (error) {
-        // Add ingredient to the not found list
-        notFoundIngredients.push(ingredientName); // Collect the missing ingredient
-        return null; // Return null if there’s an error
+        notFoundIngredients.push(ingredientName);
+        return null;
       }
     });
 
-    // Wait for all product fetch promises to resolve
     const products = await Promise.all(productFetchPromises);
-
-    // Filter out null values (for ingredients without found products)
     const validProducts = products.filter(product => product !== null);
 
-    // Add each valid product to the cart
     validProducts.forEach(product => {
-      const totalPrice = product.DiscountPrice; // Adjust as per your cart logic
+      const totalPrice = product.DiscountPrice;
       const item = {
         id: product._id,
         name: product.ProductName,
         image: product.Image_Url,
         description: product.SubCategory,
-        quantity: product.Quantity, // Adjust this if necessary
+        quantity: product.Quantity,
         price: product.DiscountPrice,
         brand: product.Brand,
         selectedQuantity: 1,
@@ -164,15 +162,15 @@ const YouTubeSearch = () => {
       showToast(`${product.ProductName} added to cart!`, 'success');
     });
 
-    // Show a toast notification if there are any missing ingredients
     if (notFoundIngredients.length > 0) {
-      setMissingIngredients(notFoundIngredients); // Update the state with missing ingredients
+      setMissingIngredients(notFoundIngredients);
       showToast(`No products found for: ${notFoundIngredients.join(', ')}`, 'danger');
     } else {
-      setMissingIngredients([]); // Clear missing ingredients if all products were found
+      setMissingIngredients([]);
     }
-  };
 
+    setLoading(false); // End loading
+  };
 
   const handleReadMore = (videoId) => {
     setExpanded(prev => ({
@@ -182,16 +180,12 @@ const YouTubeSearch = () => {
   };
 
   const shopIngredients = async (videoIngredients) => {
-    
-
     const parsedIngredients = videoIngredients.map(item => parser.parse(item));
 
     const linkedIngredients = videoIngredients.map((ingredient, index) => ({
       original: ingredient,
       parsed: parsedIngredients[index]
     }));
-
-    console.log('Linked Ingredients:', linkedIngredients);
 
     navigate(`/youtube/${query}/shopingredients`, { state: { videoIngredients, parsedIngredients: linkedIngredients } });
   };
@@ -201,7 +195,7 @@ const YouTubeSearch = () => {
       <Navbar />
       <ToastNotification show={toastInfo.show} message={toastInfo.message} type={toastInfo.type} onClose={() => setToastInfo({ ...toastInfo, show: false })} />
 
-      <div className="container" style={{marginTop:"70px"}}>
+      <div className="container" style={{ marginTop: "70px" }}>
 
         <div className='video-container'>
 
@@ -216,35 +210,30 @@ const YouTubeSearch = () => {
                 <div className='video-and-button'>
 
                   <iframe
-
                     title={video.snippet.title}
-
                     src={`https://www.youtube.com/embed/${video.id.videoId}`}
-
                     frameBorder="0"
-
                     allowFullScreen
-
                   ></iframe>
 
                   <div className='button-group'>
 
-                    <button onClick={() => addToCart(video.ingredients)}>
-
-                      <FaCartPlus size={20} /> Add to Cart
-
+                    <button
+                      onClick={() => addToCart(video.ingredients)}
+                      disabled={loading} // Disable button during loading
+                    >
+                      {loading ? 'Adding to Cart...' : <><FaCartPlus size={20} /> Add to Cart</>}
                     </button>
 
-                    <button onClick={() => sendWhatsAppMessage(video.ingredients)}>
-
-                      <FaWhatsapp size={20} color="green" /> Send to WhatsApp
-
+                    <button
+                      onClick={() => sendWhatsAppMessage(video.ingredients)}
+                      disabled={whatsAppLoading} // Disable button during WhatsApp message sending
+                    >
+                      {whatsAppLoading ? 'Sending...' : <><FaWhatsapp size={20} color="green" /> Send to WhatsApp</>}
                     </button>
 
                     <button onClick={() => shopIngredients(video.ingredients)}>
-
                       🛒 Shop Ingredients
-
                     </button>
 
                   </div>
@@ -256,39 +245,23 @@ const YouTubeSearch = () => {
                   <h4>Ingredients:</h4>
 
                   <ul>
-
                     {video.ingredients.slice(0, expanded[video.id.videoId] ? video.ingredients.length : 5).map((ingredient, index) => (
-
                       <li key={index}>{ingredient}</li>
-
                     ))}
-
                   </ul>
 
                   {video.ingredients.length > 5 && (
-
                     <button
-
                       onClick={() => handleReadMore(video.id.videoId)}
-
                       style={{
-
                         backgroundColor: '#fff',
-
                         color: '#18283f',
-
                         border: 'none',
-
                         cursor: 'pointer',
-
                       }}
-
                     >
-
                       {expanded[video.id.videoId] ? 'show less' : '...read more'}
-
                     </button>
-
                   )}
 
                 </div>
@@ -308,10 +281,8 @@ const YouTubeSearch = () => {
         )}
 
       </div>
-      </div>
-
-      );
-
+    </div>
+  );
 };
 
 export default YouTubeSearch;

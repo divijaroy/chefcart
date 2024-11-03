@@ -90,8 +90,9 @@ router.post("/LoginUser", [
 
 router.post('/userprofile', async (req, res) => {
   try {
+   
     const userProfile = await user.findOne({ email: req.body.email });
-
+    
     if (!userProfile) {
       return res.status(404).json({ message: 'User not found.' });
     }

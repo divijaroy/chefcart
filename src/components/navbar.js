@@ -4,11 +4,8 @@ import { Link } from "react-router-dom";
 import Modal from "../Modal";
 import Cart from "../screens/cart";
 import { useCart } from "./ContextReducer";
-import { FaSearch } from "react-icons/fa";
+import { FaSearch, FaUserCircle, FaShoppingCart } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Caveat&display=swap');
-</style>
 
 export default function Navbar() {
   const [cartView, setCartView] = useState(false);
@@ -19,20 +16,20 @@ export default function Navbar() {
     setCartView(true);
   };
   const [searchTerm, setSearchTerm] = useState("");
-  const navigate = useNavigate();  // Hook to programmatically navigate
+  const navigate = useNavigate();
 
   const handleSearch = (e) => {
     e.preventDefault();
     if (searchTerm) {
-      // Navigate to the SearchResults page with the search term in the URL query parameters
       navigate(`/search?q=${searchTerm}`);
     }
   };
+
   const items = useCart();
 
   return (
     <div>
-      <nav className="navbar fixed-top navbar-expand-lg" >
+      <nav className="navbar fixed-top navbar-expand-lg">
         <div className="container-fluid">
           <Link className="navbar-brand fs-4" to="/" style={{ color: '#fff' }}>
             ChefCart
@@ -44,22 +41,11 @@ export default function Navbar() {
 
           <div className="collapse navbar-collapse" id="navbarSupportedContent">
             <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-
-              {(localStorage.getItem("authToken")) ? (
-                <>
-                  <li className="nav-item fs-5">
-                    <Link className="nav-link active" aria-current="page" to="/orders" style={{ color: '#fff' }}>
-                      OrderNew
-                    </Link>
-                  </li>
-                  <li className="nav-item fs-5">
-                    <Link className="nav-link active" aria-current="page" to="/youtube" style={{ color: '#fff' }}>
-                      Recipe
-                    </Link>
-                  </li>
-                </>
-              ) : (" ")}
-
+              <li className="nav-item fs-5">
+                <Link className="nav-link active" aria-current="page" to="/youtube" style={{ color: '#fff' }}>
+                  Recipe
+                </Link>
+              </li>
             </ul>
 
             {/* Search Bar in the center of navbar */}
@@ -94,25 +80,46 @@ export default function Navbar() {
                 <FaSearch />
               </button>
             </form>
-            {(!localStorage.getItem("authToken"))
-              ? (
-                <div>
-                  <div className="nav-item d-flex me-3">
-                    <Link className="btn btn-light fs-5 me-3" to="/signup">signup</Link>
-                    <Link className="btn btn-light fs-5 " to="/login">Login</Link>
-                  </div>
-                </div>
-              ) : (
-                <div className="nav-item d-flex">
-                  <div className="btn btn-light fs-5 me-3" onClick={loadCart} >
-                    viewCart{" "}
-                    <span className="badge text-bg-primary ">{items.length}</span>
-                  </div>
-                  {cartView ? <Modal onClose={() => setCartView(false)}><Cart></Cart></Modal> : ""}
-                  <Link className="btn btn-light fs-5 me-3" to="/Profile">Profile</Link>
-                  <Link className="btn btn-light fs-5 me-3" to="/login" onClick={handlelogout}>Logout</Link>
-                </div>
-              )}
+
+            {/* View Cart button outside dropdown */}
+            <div className="btn btn-light fs-5 me-3" onClick={loadCart}>
+              <FaShoppingCart /> Cart{" "}
+              <span className="badge text-bg-light">{items.length}</span>
+            </div>
+
+            {/* Dropdown for user options (Profile, Orders, Logout) */}
+            {(!localStorage.getItem("authToken")) ? (
+              <div className="nav-item d-flex me-3">
+                <Link className="btn btn-light fs-5 me-3" to="/signup">Signup</Link>
+                <Link className="btn btn-light fs-5" to="/login">Login</Link>
+              </div>
+            ) : (
+              <div className="dropdown">
+                <button
+                  className="btn btn-light dropdown-toggle fs-5"
+                  type="button"
+                  id="dropdownMenuButton"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                >
+                  <FaUserCircle size={24} />
+                </button>
+                <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
+                  <li>
+                    <Link className="dropdown-item" to="/myorders">My Orders</Link>
+                  </li>
+                  <li>
+                    <Link className="dropdown-item" to="/profile">Profile</Link>
+                  </li>
+                  <li>
+                    <Link className="dropdown-item" to="/login" onClick={handlelogout}>Logout</Link>
+                  </li>
+                </ul>
+              </div>
+            )}
+
+            {/* Cart Modal */}
+            {cartView ? <Modal onClose={() => setCartView(false)}><Cart /></Modal> : ""}
           </div>
         </div>
       </nav>

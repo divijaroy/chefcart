@@ -1,9 +1,13 @@
-import React from 'react'
-import { useState } from 'react'
+import React, { useState } from 'react';
 
 export default function EditUserProfile({ userData }) {
   const [updateSuccess, setUpdateSuccess] = useState(false);
-  const [Credentials, setCredentials] = useState({ name: userData.name, apartmentName: userData.apartmentName, blockNumber: userData.blockNumber, floorNumber: userData.floorNumber, roomNumber: userData.roomNumber, contactNumber: userData.contactNumber })
+  const [Credentials, setCredentials] = useState({
+    name: userData.name,
+    address: userData.address,
+    contactNumber: userData.contactNumber
+  });
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -15,12 +19,8 @@ export default function EditUserProfile({ userData }) {
         body: JSON.stringify({
           name: Credentials.name,
           email: localStorage.getItem('userEmail'),
-          apartmentName: Credentials.apartmentName,
-          blockNumber: Credentials.blockNumber,
-          floorNumber: Credentials.floorNumber,
-          roomNumber: Credentials.roomNumber,
-          contactNumber: Credentials.contactNumber,
-
+          address: Credentials.address,
+          contactNumber: Credentials.contactNumber
         })
       });
 
@@ -34,7 +34,6 @@ export default function EditUserProfile({ userData }) {
         alert("Something went wrong");
       }
       if (json.success) {
-
         setUpdateSuccess(true);
       }
 
@@ -43,9 +42,11 @@ export default function EditUserProfile({ userData }) {
       alert("An error occurred. Please try again.");
     }
   };
+
   const onChange = (event) => {
-    setCredentials({ ...Credentials, [event.target.name]: event.target.value })
-  }
+    setCredentials({ ...Credentials, [event.target.name]: event.target.value });
+  };
+
   if (updateSuccess) {
     return (
       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
@@ -68,48 +69,22 @@ export default function EditUserProfile({ userData }) {
             </div>
 
             <div className="mb-3">
-              <label htmlFor="apartmentName" className="form-label text-white">Apartment Name</label>
-              <select style={{ fontWeight: '600' }} className="form-control " name="apartmentName" value={Credentials.apartmentName} onChange={onChange}>
-                <option value="">Select an apartment</option>
-                <option value="rolling hills">rolling hills</option>
-                <option value="meenakshi towers">meenakshi towers</option>
-                <option value="meghan towers">meghan towers</option>
-              </select>
+              <label htmlFor="address" className="form-label text-white">Address</label>
+              <input type="text" style={{ fontWeight: '600' }} className="form-control requi" name="address" value={Credentials.address} onChange={onChange} />
             </div>
-            <div className="mb-3 d-flex">
-              <div className="flex-grow-1 mr-3">
-                <label htmlFor="blockNumber" className="form-label text-white">Block Number</label>
-                <select style={{ fontWeight: '600' }} className="form-control" name="blockNumber" value={Credentials.blockNumber} onChange={onChange}>
-                  <option value="">Select a block number</option>
-                  <option value="A">A</option>
-                  <option value="B-1">B-1</option>
-                  <option value="B-2">B-2</option>
-                  <option value="C">c</option>
-                  <option value="D">D</option>
-                  <option value="E">E</option>
 
-                </select>
-              </div>
-              <div className="flex-grow-1 mr-3">
-                <label htmlFor="floorNumber" className="form-label text-white">Floor Number</label>
-                <input type="number" style={{ fontWeight: '600' }} className="form-control" name="floorNumber" value={Credentials.floorNumber} onChange={onChange} />
-              </div>
-              <div className="flex-grow-1">
-                <label htmlFor="roomNumber" className="form-label text-white">Room Number</label>
-                <input type="number" style={{ fontWeight: '600' }} className="form-control" name="roomNumber" value={Credentials.roomNumber} onChange={onChange} />
-              </div>
-            </div>
             <div className="mb-3">
               <label htmlFor="contactNumber" className="form-label text-white">Contact Number</label>
               <input type="tel" style={{ fontWeight: '600' }} className="form-control requi" name="contactNumber" value={Credentials.contactNumber} onChange={onChange} />
             </div>
-            <div style={{ justifyContent: 'center', display: 'flex', allignItems: 'center' }}>
-              <button type="submit" className="btn btn-primary btn-shadow">update info</button>
+
+            <div style={{ justifyContent: 'center', display: 'flex', alignItems: 'center' }}>
+              <button type="submit" className="btn btn-primary btn-shadow">Update Info</button>
             </div>
 
           </form>
         </div>
       </div>
     </>
-  )
+  );
 }

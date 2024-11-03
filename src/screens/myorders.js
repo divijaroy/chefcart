@@ -35,7 +35,7 @@ export default function MyOrders() {
         <Navbar />
       </div>
 
-      <div >
+      <div  style={{marginTop:"70px"}}>
         {orderData !== {} ? (
           Array(orderData).map((data, index) => {
             return data.orderData ? (
@@ -69,6 +69,7 @@ export default function MyOrders() {
                         )}
                       </div>
                     );
+
                   });
                 })
             ) : (

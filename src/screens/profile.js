@@ -10,6 +10,7 @@ export default function Profile() {
   const [editProfile, seteditProfile] = useState(false)
   useEffect(() => {
     const fetchMyOrder = async () => {
+      console.log(localStorage.getItem('userEmail'))
       try {
         const response = await fetch('http://localhost:5000/api/userprofile', {
           method: 'POST',
@@ -40,7 +41,7 @@ export default function Profile() {
       <div>
         <Navbar />
       </div>
-      <h1 className="fs-2" style={{ fontFamily: 'Caveat,cursive', fontWeight: '600', background: 'transparent', fontSize: '14px', textAlign: 'center', marginTop: '40px', marginBottom: '30px' }}>User Detail</h1>
+      <h1 className="fs-2" style={{ fontFamily: 'Caveat,cursive', fontWeight: '600', background: 'transparent', fontSize: '14px', textAlign: 'center', marginTop: '110px', marginBottom: '30px' }}>User Detail</h1>
       <table
         style={{
           borderCollapse: 'collapse',
@@ -60,21 +61,10 @@ export default function Profile() {
             <td className="fs-4" style={{ fontWeight: '600', marginRight: '100px', margin: '10px' }}>{userData.email}</td>
           </tr>
           <tr>
-            <td className="fs-5" style={{ fontWeight: '600', marginRight: '100px', margin: '10px' }}>Apartment Name:</td>
-            <td className="fs-4" style={{ fontWeight: '600', marginRight: '100px', margin: '10px' }}>{userData.apartmentName}</td>
+            <td className="fs-5" style={{ fontWeight: '600', marginRight: '100px', margin: '10px' }}>Address:</td>
+            <td className="fs-4" style={{ fontWeight: '600', marginRight: '100px', margin: '10px' }}>{userData.address}</td>
           </tr>
-          <tr>
-            <td className="fs-5" style={{ fontWeight: '600', marginRight: '100px', margin: '10px' }}>Block Number:</td>
-            <td className="fs-4" style={{ fontWeight: '600', marginRight: '100px', margin: '10px' }}>{userData.blockNumber}</td>
-          </tr>
-          <tr>
-            <td className="fs-5" style={{ fontWeight: '600', marginRight: '100px', margin: '10px' }}>Floor Number:</td>
-            <td className="fs-4" style={{ fontWeight: '600', marginRight: '100px', margin: '10px' }}>{userData.floorNumber}</td>
-          </tr>
-          <tr>
-            <td className="fs-5" style={{ fontWeight: '600', marginRight: '100px', margin: '10px' }}>Room Number:</td>
-            <td className="fs-4" style={{ fontWeight: '600', marginRight: '100px', margin: '10px' }}>{userData.roomNumber}</td>
-          </tr>
+          
           <tr>
             <td className="fs-5" style={{ fontWeight: '600', marginRight: '100px', margin: '10px' }}>Contact Number:</td>
             <td className="fs-4" style={{ fontWeight: '600', marginRight: '100px', margin: '10px' }}>{userData.contactNumber}</td>
