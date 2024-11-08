@@ -71,7 +71,7 @@ export default function Cart() {
         id: newItem._id,
         name: newItem.ProductName,
         image: newItem.Image_Url,
-        description: newItem.SubCategory,
+        description: newItem.Category,
         quantity: newItem.Quantity,
         price: newItem.DiscountPrice,
         brand: newItem.Brand,

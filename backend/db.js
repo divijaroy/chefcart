@@ -18,7 +18,7 @@ const MongoDB = () => {
             //     else {
             //         global.brand=brandData;
             //     }})
-            
+
             const category = await mongoose.connection.db.collection("category");
             category.find({}).toArray(async function (err, catData) {
                 if (err) {
@@ -36,4 +36,3 @@ const MongoDB = () => {
 
 
 module.exports = MongoDB;
-

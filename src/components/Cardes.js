@@ -19,7 +19,7 @@ export default function Cardes(props) {
       id: props.foodItem._id,
       name: props.foodItem.ProductName,
       image: props.foodItem.Image_Url,
-      description: props.foodItem.SubCategory,
+      description: props.foodItem.Category,
       quantity: props.foodItem.Quantity,
       price: props.foodItem.DiscountPrice,
       brand: props.foodItem.Brand,
@@ -49,7 +49,7 @@ export default function Cardes(props) {
         style={{ maxHeight: "10rem", objectFit: "contain", backgroundColor: 'white' }}
         src={props.foodItem.Image_Url}
         className="card-img-top img-fluid"
-        alt={props.foodItem.SubCategory}
+        alt={props.foodItem.Category}
       />
       <hr style={{ margin: "0" }} />
       <div className="card-body" style={{ maxHeight: "15rem" }}>

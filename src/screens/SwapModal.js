@@ -36,7 +36,7 @@ export default function SwapModal({ show, onClose, alternativeProducts, selected
                     </div>
                     <div className="modal-body">
                         <div className="swap-item d-flex align-items-center mb-3">
-                            <img src={selectedProduct.image} alt={selectedProduct.name} style={{ width: '50px' }} />
+                            <img src={selectedProduct.image}  alt={selectedProduct.name} style={{ width: '50px' }} />
                             <h5 style={{ marginLeft: '10px' }}>{selectedProduct.name}</h5>
                             <h5 style={{ marginLeft: '10px' }}>{selectedProduct.quantity}</h5>
                             <p style={{ marginLeft: 'auto' }}>{selectedProduct.price}</p>

@@ -57,7 +57,7 @@ export default function MyOrders() {
 
                           <div style={{ display: 'flex', alignItems: 'center' }}>
 
-                            <img src={arrayData.image} alt={arrayData.description} style={{ maxHeight: '10rem', objectFit: 'contain', backgroundColor: 'white' }} />
+                            <img src={arrayData.image} alt={arrayData.description}  style={{ maxHeight: '10rem', objectFit: 'contain', backgroundColor: 'white' }} />
                             <div style={{ marginLeft: '10px' }}>
                               <h3>{arrayData.name}</h3>
                               <p>Brand: {arrayData.brand}</p>

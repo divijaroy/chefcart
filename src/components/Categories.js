@@ -56,7 +56,7 @@ export default function Categories() {
           {categories.map((category) => (
             <div
               key={category.id}
-              className="col-lg-3 col-md-4 col-sm-6 mb-4"
+              className="col-lg-2 col-md-4 col-sm-6 mb-4"
               style={{ textAlign: "center" }}
             >
               <div className="category-item">

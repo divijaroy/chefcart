@@ -138,7 +138,7 @@ const YouTubeSearch = () => {
         id: product._id,
         name: product.ProductName,
         image: product.Image_Url,
-        description: product.SubCategory,
+        description: product.Category,
         quantity: product.Quantity,
         price: product.DiscountPrice,
         brand: product.Brand,

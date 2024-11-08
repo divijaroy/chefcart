@@ -44,13 +44,18 @@ router.get('/products', (req, res) => {
 
 router.get('/categories', (req, res) => {
     try {
-        
-        res.send( global.category)
+        // Sort the categories alphabetically by the category name
+        const sortedCategories = global.category.sort((a, b) => {
+            return a.category.localeCompare(b.category);
+        });
+
+        res.send(sortedCategories);
     } catch (error) {
         console.error(error.message);
         res.send("server error");
     }
-})
+});
+
 
 
 
