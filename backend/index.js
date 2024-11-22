@@ -12,10 +12,10 @@ app.get('/', (req, res) => {
 })
 app.use(cors({
   // origin:"https://dudewala.onrender.com"
-  origin: "http://localhost:3000"
+  origin: "https://chefcart.onrender.com"
 }));
 app.use((req, res, next) => {
-  res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
+  res.setHeader("Access-Control-Allow-Origin", "https://chefcart.onrender.com");
   res.header(
     "Access-Control-Allow-Headers",
     "Origin, X-Requested-With, Content-Type, Accept"
