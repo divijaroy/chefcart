@@ -66,7 +66,7 @@ const YouTubeSearch = () => {
 
   const fetchIngredients = async (description) => {
     try {
-      const response = await fetch('http://localhost:5000/api/extract_ingredients', {
+      const response = await fetch('https://chefcartbackend.onrender.com/api/extract_ingredients', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -84,13 +84,13 @@ const YouTubeSearch = () => {
     setWhatsAppLoading(true); // Start loading for WhatsApp button
 
     try {
-      const response = await fetch('http://localhost:5000/api/send_whatsapp', {
+      const response = await fetch('https://chefcartbackend.onrender.com/api/send_whatsapp', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ ingredients, email: localStorage.getItem('userEmail') }),
-       
+
       });
       const data = await response.json();
       alert(data.status || 'Message sent!');
@@ -117,7 +117,7 @@ const YouTubeSearch = () => {
       const ingredientName = linkedIngredient.name;
 
       try {
-        const response = await fetch(`http://localhost:5000/api/search4?q=${ingredientName}`);
+        const response = await fetch(`https://chefcartbackend.onrender.com/api/search4?q=${ingredientName}`);
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }

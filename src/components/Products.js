@@ -61,7 +61,7 @@ export default function Products() {
 
     useEffect(() => {
         setLoading(true);
-        fetch(`http://localhost:5000/api/products?categoryId=${categoryId}`)
+        fetch(`https://chefcartbackend.onrender.com/api/products?categoryId=${categoryId}`)
             .then((response) => response.json())
             .then((data) => {
                 console.log('Fetched data:', data);

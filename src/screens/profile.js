@@ -12,7 +12,7 @@ export default function Profile() {
     const fetchMyOrder = async () => {
       console.log(localStorage.getItem('userEmail'))
       try {
-        const response = await fetch('http://localhost:5000/api/userprofile', {
+        const response = await fetch('https://chefcartbackend.onrender.com/api/userprofile', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -64,7 +64,7 @@ export default function Profile() {
             <td className="fs-5" style={{ fontWeight: '600', marginRight: '100px', margin: '10px' }}>Address:</td>
             <td className="fs-4" style={{ fontWeight: '600', marginRight: '100px', margin: '10px' }}>{userData.address}</td>
           </tr>
-          
+
           <tr>
             <td className="fs-5" style={{ fontWeight: '600', marginRight: '100px', margin: '10px' }}>Contact Number:</td>
             <td className="fs-4" style={{ fontWeight: '600', marginRight: '100px', margin: '10px' }}>{userData.contactNumber}</td>

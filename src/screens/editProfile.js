@@ -11,7 +11,7 @@ export default function EditUserProfile({ userData }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch("http://localhost:5000/api/updateUser", {
+      const response = await fetch("https://chefcartbackend.onrender.com/api/updateUser", {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

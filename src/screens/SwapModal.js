@@ -8,7 +8,7 @@ export default function SwapModal({ show, onClose, alternativeProducts, selected
     const handleSearch = async () => {
         setIsSearching(true); // Set to true to indicate search is happening
         try {
-            const response = await fetch(`http://localhost:5000/api/search3?q=${searchQuery}`);
+            const response = await fetch(`https://chefcartbackend.onrender.com/api/search3?q=${searchQuery}`);
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
@@ -36,7 +36,7 @@ export default function SwapModal({ show, onClose, alternativeProducts, selected
                     </div>
                     <div className="modal-body">
                         <div className="swap-item d-flex align-items-center mb-3">
-                            <img src={selectedProduct.image}  alt={selectedProduct.name} style={{ width: '50px' }} />
+                            <img src={selectedProduct.image} alt={selectedProduct.name} style={{ width: '50px' }} />
                             <h5 style={{ marginLeft: '10px' }}>{selectedProduct.name}</h5>
                             <h5 style={{ marginLeft: '10px' }}>{selectedProduct.quantity}</h5>
                             <p style={{ marginLeft: 'auto' }}>{selectedProduct.price}</p>

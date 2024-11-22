@@ -10,7 +10,7 @@ export default function ResetPassword() {
     e.preventDefault();
 
     try {
-      const response = await fetch('http://localhost:5000/api/validateOldPassword', {
+      const response = await fetch('https://chefcartbackend.onrender.com/api/validateOldPassword', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -43,7 +43,7 @@ export default function ResetPassword() {
     e.preventDefault();
 
     try {
-      const response = await fetch('http://localhost:5000/api/resetPassword', {
+      const response = await fetch('https://chefcartbackend.onrender.com/api/resetPassword', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

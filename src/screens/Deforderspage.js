@@ -3,14 +3,14 @@ import Navbar from '../components/navbar';
 import { Link } from 'react-router-dom';
 
 export default function Deforderspage() {
- 
+
   const [orderData, setOrderData] = useState(null);
   const [fromDate, setFromDate] = useState('');
   const [toDate, setToDate] = useState('');
   const [daysDiff, setDaysDiff] = useState(0);
   const fetchMyOrder = async () => {
-    // await fetch('http://localhost:5000/api/DisplayDefaultOrderdata', {
-    await fetch('http://localhost:5000/api/DisplayDefaultOrderdata', {
+    // await fetch('https://chefcartbackend.onrender.com/api/DisplayDefaultOrderdata', {
+    await fetch('https://chefcartbackend.onrender.com/api/DisplayDefaultOrderdata', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -26,7 +26,7 @@ export default function Deforderspage() {
           setFromDate(data.fromDate);
           setToDate(data.toDate);
           setDaysDiff(data.daysDiff);
-          
+
         } else if (res.status === 404) {
           setOrderData([]);
         } else {
@@ -45,7 +45,7 @@ export default function Deforderspage() {
   const totalPrice = orderData?.reduce((total, food) => total + food.totalPrice, 0) ?? 0;
 
   const handledropOrder = async () => {
-    await fetch('http://localhost:5000/api/DropDefaultOrder', {
+    await fetch('https://chefcartbackend.onrender.com/api/DropDefaultOrder', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -79,21 +79,21 @@ export default function Deforderspage() {
 
 
       {orderData === null ? (
-            " "
+        " "
       ) : orderData.length === 0 ? (
         <>
-          <h1 className="m-5 text-center fs-2 bold" style={{ justifyContent:'center',color: 'black', fontFamily: 'Caveat,cursive', margin: '0',marginTop:'600px' }}>
+          <h1 className="m-5 text-center fs-2 bold" style={{ justifyContent: 'center', color: 'black', fontFamily: 'Caveat,cursive', margin: '0', marginTop: '600px' }}>
             No default Orders found
           </h1>
-          <div style={{ justifyContent:'center',display:'flex'}}>
-          <Link className="btn btn-primary me-3"to="/orders">
-            Create your default order now
-          </Link>
+          <div style={{ justifyContent: 'center', display: 'flex' }}>
+            <Link className="btn btn-primary me-3" to="/orders">
+              Create your default order now
+            </Link>
           </div>
         </>
       ) : (
         <>
-          <h1 className="fs-2" style={{  fontFamily: 'Caveat,cursive',fontWeight: '600', background: 'transparent', fontSize: '14px', textAlign: 'center', marginTop: '30px', marginBottom: '20px' }}>
+          <h1 className="fs-2" style={{ fontFamily: 'Caveat,cursive', fontWeight: '600', background: 'transparent', fontSize: '14px', textAlign: 'center', marginTop: '30px', marginBottom: '20px' }}>
             Your Default Orders
           </h1>
           <div style={{ display: 'flex', justifyContent: 'space-around', marginTop: '20px', marginBottom: '20px' }}>
@@ -158,7 +158,7 @@ export default function Deforderspage() {
             total bill till today: <span className="fs-4">{totalPrice * daysDiff}</span>
           </div>
           <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '20px', marginRight: '90px' }}>
-            <button className="btn btn-primary me-3"  onClick={handledropOrder}>Drop your daily order</button>
+            <button className="btn btn-primary me-3" onClick={handledropOrder}>Drop your daily order</button>
           </div>
         </>
       )}

@@ -11,7 +11,7 @@ export default function Orders() {
     const productsPerPage = 20; // Number of products per page
 
     const loaddata = async (reset = false) => {
-        let response = await fetch('http://localhost:5000/api/DisplayData', {
+        let response = await fetch('https://chefcartbackend.onrender.com/api/DisplayData', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -44,7 +44,7 @@ export default function Orders() {
     // Fetch data when the selected category or current page changes
     useEffect(() => {
         loaddata(true); // Reset data when category changes
-           // eslint-disable-next-line
+        // eslint-disable-next-line
     }, [selectedCategory]);
 
     // Fetch more products when currentPage changes

@@ -7,7 +7,7 @@ export default function MyOrders() {
 
 
   async function fetchMyOrder() {
-    await fetch('http://localhost:5000/api/myOrderData', {
+    await fetch('https://chefcartbackend.onrender.com/api/myOrderData', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -35,7 +35,7 @@ export default function MyOrders() {
         <Navbar />
       </div>
 
-      <div  style={{marginTop:"70px"}}>
+      <div style={{ marginTop: "70px" }}>
         {orderData !== {} ? (
           Array(orderData).map((data, index) => {
             return data.orderData ? (
@@ -57,7 +57,7 @@ export default function MyOrders() {
 
                           <div style={{ display: 'flex', alignItems: 'center' }}>
 
-                            <img src={arrayData.image} alt={arrayData.description}  style={{ maxHeight: '10rem', objectFit: 'contain', backgroundColor: 'white' }} />
+                            <img src={arrayData.image} alt={arrayData.description} style={{ maxHeight: '10rem', objectFit: 'contain', backgroundColor: 'white' }} />
                             <div style={{ marginLeft: '10px' }}>
                               <h3>{arrayData.name}</h3>
                               <p>Brand: {arrayData.brand}</p>

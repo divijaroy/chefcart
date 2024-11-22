@@ -22,7 +22,7 @@ export default function Cart() {
   const handleCheckOut = async () => {
     try {
       const userEmail = localStorage.getItem('userEmail');
-      const response = await fetch('http://localhost:5000/api/OrderData', {
+      const response = await fetch('https://chefcartbackend.onrender.com/api/OrderData', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -48,7 +48,7 @@ export default function Cart() {
     const ingredientName = food.name;
 
     try {
-      const response = await fetch(`http://localhost:5000/api/search3?q=${ingredientName}`);
+      const response = await fetch(`https://chefcartbackend.onrender.com/api/search3?q=${ingredientName}`);
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }

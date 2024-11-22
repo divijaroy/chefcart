@@ -77,7 +77,7 @@ const ShopIngredients = () => {
 
     const handleIngredientClick = async (ingredient) => {
         setSelectedIngredient(ingredient);
-        
+
 
         setLoading(true);  // Show loading while fetching
         setRelatedProducts([]);  // Clear previous results
@@ -89,13 +89,13 @@ const ShopIngredients = () => {
 
             try {
                 console.log('Ingredient name:', ingredientName);
-                const response = await fetch(`http://localhost:5000/api/search2?q=${ingredientName}`);
+                const response = await fetch(`https://chefcartbackend.onrender.com/api/search2?q=${ingredientName}`);
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
                 const data = await response.json();
                 setRelatedProducts(data);
-                
+
             } catch (error) {
                 console.error('Error fetching products:', error);
                 alert('Failed to fetch related products.');
@@ -131,14 +131,14 @@ const ShopIngredients = () => {
                             {selectedIngredient ? `Products for "${selectedIngredient}"` : 'Select an Ingredient'}
                         </h2>
                         <div style={{ display: "flex", justifyContent: 'center', marginTop: '55px', flexWrap: "wrap" }}>
-                        {/* Loading state */}
-                        {loading ? (
-                            
-                            Array(3).fill(0).map((_, index) => (
-                                <SkeletonCard key={index} />
-                            ))
-                        ) : (
-                            
+                            {/* Loading state */}
+                            {loading ? (
+
+                                Array(3).fill(0).map((_, index) => (
+                                    <SkeletonCard key={index} />
+                                ))
+                            ) : (
+
                                 relatedProducts.length > 0 ? (
                                     relatedProducts.map((product) => (
                                         <div key={product._id} style={{ margin: '10px' }}>
@@ -148,8 +148,8 @@ const ShopIngredients = () => {
                                 ) : (
                                     <p>{selectedIngredient ? 'No products available' : 'Please choose an ingredient'}</p>
                                 )
-                           
-                        )}
+
+                            )}
                         </div>
                     </div>
                 </Content>

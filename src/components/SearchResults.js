@@ -75,7 +75,7 @@ export default function SearchResults() {
     useEffect(() => {
         const fetchSearchResults = async () => {
             try {
-                const response = await axios.get(`http://localhost:5000/api/search?q=${searchTerm}`);
+                const response = await axios.get(`https://chefcartbackend.onrender.com/api/search?q=${searchTerm}`);
                 setSearchResults(response.data);
             } catch (error) {
                 console.error("Error fetching search results:", error);
@@ -95,7 +95,7 @@ export default function SearchResults() {
         <div>
             <Navbar />
 
-            <div style={{marginTop:"70px"}}>
+            <div style={{ marginTop: "70px" }}>
                 <h2>Search Results for "{searchTerm}"</h2>
                 <div className="search-results" style={{ display: "flex", justifyContent: 'center', marginTop: '55px', flexWrap: "wrap" }}>
                     {loading ? (

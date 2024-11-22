@@ -11,8 +11,8 @@ export default function Loginform() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // const response = await fetch("http://localhost:5000/api/LoginUser", {
-      const response = await fetch("http://localhost:5000/api/LoginUser", {
+      // const response = await fetch("https://chefcartbackend.onrender.com/api/LoginUser", {
+      const response = await fetch("https://chefcartbackend.onrender.com/api/LoginUser", {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -51,24 +51,24 @@ export default function Loginform() {
   return (
     <>
       <div className='container' style={{ height: '650px', width: '1000px', alignItems: "center", justifyContent: "center", marginTop: '70px' }}>
-        <div  style={alignItems: "center", justifyContent: "center">
-          <form onSubmit={handleSubmit} className='formlogin' style={{ "width": "400px" }}>
-            <h2 style={{ fontSize: '35px', textAlign: 'center', marginBottom: '30px', fontFamily: "Caveat,cursive" }}>Login Form</h2>
-            <div className="mb-3">
-              <label htmlFor="exampleInputEmail1" className="form-label">Email address</label>
-              <input type="email" className="form-control requi" id="exampleInputEmail1" aria-describedby="emailHelp" name="email" value={Credentials.email} onChange={onChange} />
-            </div>
-            <div className="mb-3">
-              <label htmlFor="exampleInputPassword1" className="form-label">Password</label>
-              <input type="password" className="form-control requi" id="exampleInputPassword1" name="password" value={Credentials.password} onChange={onChange} />
-            </div>
-            <div className="button-container">
-              <button type="submit" className="btn btn-shadow">Submit</button>
-              <Link className="btn  btn-shadow align-right" to="/signup" role="button">New user?</Link>
-            </div>
-          </form>
-        </div>
+        <div style={alignItems: "center", justifyContent: "center">
+        <form onSubmit={handleSubmit} className='formlogin' style={{ "width": "400px" }}>
+          <h2 style={{ fontSize: '35px', textAlign: 'center', marginBottom: '30px', fontFamily: "Caveat,cursive" }}>Login Form</h2>
+          <div className="mb-3">
+            <label htmlFor="exampleInputEmail1" className="form-label">Email address</label>
+            <input type="email" className="form-control requi" id="exampleInputEmail1" aria-describedby="emailHelp" name="email" value={Credentials.email} onChange={onChange} />
+          </div>
+          <div className="mb-3">
+            <label htmlFor="exampleInputPassword1" className="form-label">Password</label>
+            <input type="password" className="form-control requi" id="exampleInputPassword1" name="password" value={Credentials.password} onChange={onChange} />
+          </div>
+          <div className="button-container">
+            <button type="submit" className="btn btn-shadow">Submit</button>
+            <Link className="btn  btn-shadow align-right" to="/signup" role="button">New user?</Link>
+          </div>
+        </form>
       </div>
+    </div >
 
 
     </>
